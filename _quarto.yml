@@ -15,20 +15,20 @@ format:
     toc-depth: 4
 
 website:
-  title: "dhblog"
-  site-url: "https://dienhoa.github.io/dhblog/"
+  title: "faster"
+  site-url: "https://masapasa.github.io/faster/"
   description: "Dien-Hoa AI Blog"
   twitter-card: true
   open-graph: true
   repo-branch: main
-  repo-url: "https://github.com/dienhoa/dhblog/"
+  repo-url: "https://github.com/masapasa/faster/"
   repo-actions: [issue]
   navbar:
     background: primary
     search: true
     right:
       - icon: github
-        href: "https://github.com/dienhoa/dhblog/"
+        href: "https://github.com/masapasa/faster/"
   sidebar:
     style: "floating"
 
