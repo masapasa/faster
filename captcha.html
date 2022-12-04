@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>dhblog - Captcha or Sequence Classification (WIP)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="dhblog - Captcha or Sequence Classification (WIP)">
+<meta property="og:description" content="A simple image classification is used with output dimension is: Number_of_vocab x Number_of_characters">
+<meta property="og:site-name" content="dhblog">
+<meta name="twitter:title" content="dhblog - Captcha or Sequence Classification (WIP)">
+<meta name="twitter:description" content="A simple image classification is used with output dimension is: Number_of_vocab x Number_of_characters">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">dhblog</span>
+    </a>
+  </div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Captcha or Sequence Classification (WIP)</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">dhblog</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ssd_base.html" class="sidebar-item-text sidebar-link">Object Detection - Single Shot Detector for fastai V2</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./captcha.html" class="sidebar-item-text sidebar-link active">Captcha or Sequence Classification (WIP)</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#simple-classification-model" id="toc-simple-classification-model" class="nav-link active" data-scroll-target="#simple-classification-model">Simple Classification Model</a>
+  <ul class="collapse">
+  <li><a href="#no-avgpool" id="toc-no-avgpool" class="nav-link" data-scroll-target="#no-avgpool">No AvgPool</a></li>
+  </ul></li>
+  <li><a href="#crnn-coming-soon" id="toc-crnn-coming-soon" class="nav-link" data-scroll-target="#crnn-coming-soon">CRNN (Coming soon)</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dienhoa/dhblog/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Captcha or Sequence Classification (WIP)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.vision.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> PIL</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn <span class="im">import</span> CTCLoss</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> logsumexp  <span class="co"># log(p1 + p2) = logsumexp([log_p1, log_p2])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> untar_data(<span class="st">'https://github.com/AakashKumarNain/CaptchaCracker/raw/master/captcha_images_v2.zip'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>imgs <span class="op">=</span> get_image_files(path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>imgs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>(#1040) [Path('/home/ubuntu/.fastai/data/captcha_images_v2/by5y3.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/efb3f.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/76y6f.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/e2d66.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/c6we6.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/p2m6n.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/d66cn.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/2yggg.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/cffp4.png'),Path('/home/ubuntu/.fastai/data/captcha_images_v2/5npdn.png')...]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> plt.imread(imgs[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>&lt;matplotlib.image.AxesImage at 0x7fa12f4c2580&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="captcha_files/figure-html/cell-7-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>img.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>(50, 200, 4)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> imgs[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>path</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>Path('/home/ubuntu/.fastai/data/captcha_images_v2/by5y3.png')</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find all the unique labels</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ld <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> imgs:</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> l <span class="kw">in</span> f.stem:</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        ld.add(l)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>label_mapper <span class="op">=</span> <span class="st">""</span>.join(<span class="bu">sorted</span>(ld))</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>l2i <span class="op">=</span> { label_mapper[i]: i<span class="op">+</span><span class="dv">1</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(label_mapper)) } <span class="co"># labels to int + BLANK LABEL</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>i2l <span class="op">=</span> { v: k <span class="cf">for</span> k, v <span class="kw">in</span> l2i.items() } <span class="co"># int to labels</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>l2i, i2l</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="70">
+<pre><code>({'2': 1,
+  '3': 2,
+  '4': 3,
+  '5': 4,
+  '6': 5,
+  '7': 6,
+  '8': 7,
+  'b': 8,
+  'c': 9,
+  'd': 10,
+  'e': 11,
+  'f': 12,
+  'g': 13,
+  'm': 14,
+  'n': 15,
+  'p': 16,
+  'w': 17,
+  'x': 18,
+  'y': 19},
+ {1: '2',
+  2: '3',
+  3: '4',
+  4: '5',
+  5: '6',
+  6: '7',
+  7: '8',
+  8: 'b',
+  9: 'c',
+  10: 'd',
+  11: 'e',
+  12: 'f',
+  13: 'g',
+  14: 'm',
+  15: 'n',
+  16: 'p',
+  17: 'w',
+  18: 'x',
+  19: 'y'})</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="71">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> label_func(path): <span class="cf">return</span> tensor([l2i[l] <span class="cf">for</span> l <span class="kw">in</span> path.stem])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="72">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> open_image(fname):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> PIL.Image.<span class="bu">open</span>(fname).convert(<span class="st">'RGB'</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> torch.Tensor(np.array(img))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> t.permute(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>).double()<span class="op">/</span><span class="fl">255.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="73">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CaptchaImage(fastuple):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> show(<span class="va">self</span>, ctx<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs): </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        img,labels <span class="op">=</span> <span class="va">self</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        t <span class="op">=</span> tensor(img)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> show_image(t, title<span class="op">=</span><span class="st">''</span>.join(<span class="bu">str</span>(i2l[i.item()]) <span class="cf">for</span> i <span class="kw">in</span> labels), ctx<span class="op">=</span>ctx, <span class="op">**</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CaptchaTransform(Transform):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, files):</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.files <span class="op">=</span> files</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encodes(<span class="va">self</span>, i):</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">file</span> <span class="op">=</span> <span class="va">self</span>.files[i]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> label_func(<span class="bu">file</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> open_image(<span class="bu">file</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> CaptchaImage(TensorImage(img), label)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="75">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>bs <span class="op">=</span> <span class="dv">128</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="76">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>splitter <span class="op">=</span> RandomSplitter() </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>train_idx , valid_idx <span class="op">=</span> splitter(imgs) </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>train_files <span class="op">=</span> imgs[train_idx]</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>valid_files <span class="op">=</span> imgs[valid_idx]</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>train_tl<span class="op">=</span> TfmdLists(<span class="bu">range</span>(<span class="bu">len</span>(train_files)), CaptchaTransform(train_files))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>valid_tl<span class="op">=</span> TfmdLists(<span class="bu">range</span>(<span class="bu">len</span>(valid_files)), CaptchaTransform(valid_files))</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>dls <span class="op">=</span> DataLoaders.from_dsets(train_tl, </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>                             valid_tl, </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>                             after_item<span class="op">=</span>Resize((<span class="dv">50</span>,<span class="dv">200</span>), method<span class="op">=</span>ResizeMethod.Squish),</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>                             after_batch<span class="op">=</span>[Rotate(max_deg<span class="op">=</span><span class="dv">6</span>),</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                                          Brightness(max_lighting<span class="op">=</span><span class="fl">0.2</span>, p<span class="op">=</span><span class="fl">0.75</span>, batch<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                                          Contrast(max_lighting<span class="op">=</span><span class="fl">0.2</span>, p<span class="op">=</span><span class="fl">0.75</span>, batch<span class="op">=</span><span class="va">False</span>)], </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                             bs<span class="op">=</span>bs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="77">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="at">@typedispatch</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_batch(x:CaptchaImage, y, samples, ctxs<span class="op">=</span><span class="va">None</span>, max_n<span class="op">=</span><span class="dv">6</span>, nrows<span class="op">=</span><span class="va">None</span>, ncols<span class="op">=</span><span class="dv">2</span>, figsize<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs):</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> figsize <span class="kw">is</span> <span class="va">None</span>: figsize <span class="op">=</span> (ncols<span class="op">*</span><span class="dv">6</span>, max_n<span class="op">//</span>ncols <span class="op">*</span> <span class="dv">3</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ctxs <span class="kw">is</span> <span class="va">None</span>: ctxs <span class="op">=</span> get_grid(<span class="bu">min</span>(x[<span class="dv">0</span>].shape[<span class="dv">0</span>], max_n), nrows<span class="op">=</span><span class="va">None</span>, ncols<span class="op">=</span>ncols, figsize<span class="op">=</span>figsize)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,ctx <span class="kw">in</span> <span class="bu">enumerate</span>(ctxs): CaptchaImage(x[<span class="dv">0</span>][i],x[<span class="dv">1</span>][i]).show(ctx<span class="op">=</span>ctx)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="78">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tensor(<span class="dv">14</span>).item()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="78">
+<pre><code>14</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="79">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>one_batch <span class="op">=</span> dls.one_batch()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="80">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dls.show_batch(max_n<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="captcha_files/figure-html/cell-22-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>n_chars <span class="op">=</span> <span class="bu">len</span>(i2l)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>n_chars <span class="op">*</span> <span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>95</code></pre>
+</div>
+</div>
+<section id="simple-classification-model" class="level2">
+<h2 class="anchored" data-anchor-id="simple-classification-model">Simple Classification Model</h2>
+<p>A simple image classification is used with output dimension is: <code>Number_of_vocab x Number_of_characters</code></p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> create_cnn_model(xresnet34, n_chars<span class="op">*</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>crit <span class="op">=</span> LabelSmoothingCrossEntropyFlat()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> loss_captcha(output, target):</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> output.view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">5</span>, n_chars)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> crit(output, target)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> char_accu(inp, targ, axis<span class="op">=-</span><span class="dv">1</span>):</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    inps <span class="op">=</span> inp.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">5</span>, n_chars)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> inps.argmax(dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (pred <span class="op">==</span> targ).<span class="bu">sum</span>()<span class="op">/</span>(pred.shape[<span class="dv">0</span>]<span class="op">*</span>pred.shape[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> captcha_accu(inp, targ, axis<span class="op">=-</span><span class="dv">1</span>):</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    inps <span class="op">=</span> inp.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">5</span>, n_chars)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> inps.argmax(dim<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ((pred <span class="op">==</span> targ).<span class="bu">all</span>(axis<span class="op">=</span><span class="dv">1</span>)).<span class="bu">sum</span>()<span class="op">/</span>targ.shape[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_captcha, metrics<span class="op">=</span>[char_accu, captcha_accu])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">40</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>char_accu</th>
+      <th>captcha_accu</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>4.476278</td>
+      <td>3.333658</td>
+      <td>0.065385</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>4.417804</td>
+      <td>3.126414</td>
+      <td>0.071154</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>4.304584</td>
+      <td>3.232960</td>
+      <td>0.058654</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>4.187447</td>
+      <td>3.362142</td>
+      <td>0.062500</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>4.027558</td>
+      <td>3.753680</td>
+      <td>0.091346</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>3.866274</td>
+      <td>4.317540</td>
+      <td>0.092308</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>3.705276</td>
+      <td>3.727203</td>
+      <td>0.130769</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>3.543381</td>
+      <td>3.895546</td>
+      <td>0.121154</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>3.367218</td>
+      <td>5.266652</td>
+      <td>0.099038</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>3.192778</td>
+      <td>3.641559</td>
+      <td>0.182692</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>3.016066</td>
+      <td>3.658565</td>
+      <td>0.169231</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>2.840049</td>
+      <td>4.248789</td>
+      <td>0.186538</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>2.668165</td>
+      <td>4.148201</td>
+      <td>0.192308</td>
+      <td>0.000000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>2.500451</td>
+      <td>3.241827</td>
+      <td>0.261538</td>
+      <td>0.004808</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>2.345507</td>
+      <td>2.236456</td>
+      <td>0.424038</td>
+      <td>0.004808</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>2.201324</td>
+      <td>2.046680</td>
+      <td>0.468269</td>
+      <td>0.028846</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>2.065930</td>
+      <td>2.029218</td>
+      <td>0.500962</td>
+      <td>0.033654</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>1.944293</td>
+      <td>1.877636</td>
+      <td>0.531731</td>
+      <td>0.057692</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>1.833889</td>
+      <td>1.612115</td>
+      <td>0.605769</td>
+      <td>0.086538</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>1.732575</td>
+      <td>1.713561</td>
+      <td>0.594231</td>
+      <td>0.096154</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>1.639566</td>
+      <td>1.641400</td>
+      <td>0.601923</td>
+      <td>0.110577</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>1.557264</td>
+      <td>1.428647</td>
+      <td>0.692308</td>
+      <td>0.192308</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>1.483890</td>
+      <td>1.424564</td>
+      <td>0.678846</td>
+      <td>0.182692</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>1.417021</td>
+      <td>1.300680</td>
+      <td>0.751923</td>
+      <td>0.283654</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>1.356270</td>
+      <td>1.326570</td>
+      <td>0.732692</td>
+      <td>0.240385</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>1.301427</td>
+      <td>1.333500</td>
+      <td>0.746154</td>
+      <td>0.254808</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>1.251688</td>
+      <td>1.252823</td>
+      <td>0.782692</td>
+      <td>0.331731</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>1.208397</td>
+      <td>1.180259</td>
+      <td>0.810577</td>
+      <td>0.365385</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>1.168011</td>
+      <td>1.156677</td>
+      <td>0.826923</td>
+      <td>0.437500</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td>1.131522</td>
+      <td>1.161403</td>
+      <td>0.816346</td>
+      <td>0.399038</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>1.099192</td>
+      <td>1.141058</td>
+      <td>0.814423</td>
+      <td>0.403846</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>1.069991</td>
+      <td>1.125866</td>
+      <td>0.836538</td>
+      <td>0.471154</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>1.043716</td>
+      <td>1.110983</td>
+      <td>0.838462</td>
+      <td>0.490385</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>1.020709</td>
+      <td>1.092527</td>
+      <td>0.848077</td>
+      <td>0.514423</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>0.999525</td>
+      <td>1.091171</td>
+      <td>0.853846</td>
+      <td>0.504808</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td>0.981022</td>
+      <td>1.080948</td>
+      <td>0.863462</td>
+      <td>0.524038</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>0.964225</td>
+      <td>1.082140</td>
+      <td>0.853846</td>
+      <td>0.495192</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td>0.948947</td>
+      <td>1.076262</td>
+      <td>0.857692</td>
+      <td>0.528846</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td>0.935679</td>
+      <td>1.073239</td>
+      <td>0.856731</td>
+      <td>0.519231</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>0.923326</td>
+      <td>1.071550</td>
+      <td>0.858654</td>
+      <td>0.543269</td>
+      <td>00:29</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>learn.recorder.plot_loss()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="captcha_files/figure-html/cell-32-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<section id="no-avgpool" class="level3">
+<h3 class="anchored" data-anchor-id="no-avgpool">No AvgPool</h3>
+<p>In the model used above, between the <code>body</code> and <code>head</code>, there is an <code>AvgPool2d</code> layer, which blurs all essential spatial information. So let’s remove it and create our own <code>head</code></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="captcha_files/figure-html/814a0115-1-image.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">image.png</figcaption><p></p>
+</figure>
+</div>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> create_body(xresnet34)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>head <span class="op">=</span> nn.Sequential(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    Flatten(),</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    nn.ReLU(),</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    nn.Dropout(<span class="fl">0.5</span>),</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">7168</span>,<span class="dv">1000</span>),</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    nn.ReLU(),</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    nn.BatchNorm1d(<span class="dv">1000</span>),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    nn.Dropout(<span class="fl">0.5</span>),</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">1000</span>,<span class="dv">95</span>),</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> nn.Sequential(body, head)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> Learner(dls, model, loss_captcha, metrics<span class="op">=</span>[char_accu, captcha_accu])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># learn.lr_find()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">40</span>, <span class="fl">3e-3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>char_accu</th>
+      <th>captcha_accu</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>3.191548</td>
+      <td>2.941001</td>
+      <td>0.076923</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>3.075782</td>
+      <td>2.899808</td>
+      <td>0.126923</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2.906533</td>
+      <td>2.830948</td>
+      <td>0.147115</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>2.710024</td>
+      <td>2.763503</td>
+      <td>0.163462</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>2.498606</td>
+      <td>2.544354</td>
+      <td>0.270192</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>2.277901</td>
+      <td>2.081050</td>
+      <td>0.442308</td>
+      <td>0.000000</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>2.070913</td>
+      <td>1.772311</td>
+      <td>0.565385</td>
+      <td>0.076923</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>1.886266</td>
+      <td>1.783266</td>
+      <td>0.543269</td>
+      <td>0.067308</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>1.730296</td>
+      <td>1.627859</td>
+      <td>0.595192</td>
+      <td>0.072115</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>1.598513</td>
+      <td>1.726345</td>
+      <td>0.553846</td>
+      <td>0.052885</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>1.487451</td>
+      <td>1.446010</td>
+      <td>0.688462</td>
+      <td>0.149038</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>1.393924</td>
+      <td>1.350629</td>
+      <td>0.741346</td>
+      <td>0.235577</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>1.316039</td>
+      <td>1.279284</td>
+      <td>0.764423</td>
+      <td>0.317308</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>1.247274</td>
+      <td>1.165796</td>
+      <td>0.796154</td>
+      <td>0.341346</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>1.188182</td>
+      <td>1.245245</td>
+      <td>0.777885</td>
+      <td>0.298077</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>1.136491</td>
+      <td>1.179183</td>
+      <td>0.816346</td>
+      <td>0.394231</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>1.091255</td>
+      <td>1.050491</td>
+      <td>0.873077</td>
+      <td>0.519231</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>1.050464</td>
+      <td>1.062263</td>
+      <td>0.862500</td>
+      <td>0.538462</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>1.014761</td>
+      <td>0.979492</td>
+      <td>0.893269</td>
+      <td>0.625000</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>0.982404</td>
+      <td>1.006078</td>
+      <td>0.894231</td>
+      <td>0.615385</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.952830</td>
+      <td>0.982500</td>
+      <td>0.900000</td>
+      <td>0.658654</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>0.927115</td>
+      <td>0.914533</td>
+      <td>0.928846</td>
+      <td>0.745192</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>0.903571</td>
+      <td>0.955804</td>
+      <td>0.916346</td>
+      <td>0.716346</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>0.882480</td>
+      <td>0.912319</td>
+      <td>0.934615</td>
+      <td>0.759615</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>0.863520</td>
+      <td>0.921165</td>
+      <td>0.927885</td>
+      <td>0.725962</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>0.846013</td>
+      <td>0.867773</td>
+      <td>0.935577</td>
+      <td>0.788462</td>
+      <td>00:29</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>0.830049</td>
+      <td>0.867557</td>
+      <td>0.937500</td>
+      <td>0.783654</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>0.815565</td>
+      <td>0.860243</td>
+      <td>0.943269</td>
+      <td>0.817308</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>0.802556</td>
+      <td>0.856743</td>
+      <td>0.947115</td>
+      <td>0.822115</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td>0.790769</td>
+      <td>0.859355</td>
+      <td>0.947115</td>
+      <td>0.807692</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.779875</td>
+      <td>0.854335</td>
+      <td>0.942308</td>
+      <td>0.798077</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>0.770362</td>
+      <td>0.846707</td>
+      <td>0.949038</td>
+      <td>0.817308</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>0.761172</td>
+      <td>0.840953</td>
+      <td>0.950000</td>
+      <td>0.817308</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>0.752919</td>
+      <td>0.836481</td>
+      <td>0.948077</td>
+      <td>0.817308</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>0.745560</td>
+      <td>0.827576</td>
+      <td>0.949038</td>
+      <td>0.826923</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td>0.739381</td>
+      <td>0.824142</td>
+      <td>0.951923</td>
+      <td>0.831731</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>0.733570</td>
+      <td>0.819511</td>
+      <td>0.954808</td>
+      <td>0.836538</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td>0.728176</td>
+      <td>0.817993</td>
+      <td>0.952885</td>
+      <td>0.831731</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td>0.723199</td>
+      <td>0.819822</td>
+      <td>0.953846</td>
+      <td>0.831731</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>0.718606</td>
+      <td>0.820445</td>
+      <td>0.948077</td>
+      <td>0.812500</td>
+      <td>00:29</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>learn.recorder.plot_loss()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="captcha_files/figure-html/cell-39-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>learn.unfreeze()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>learn.lr_find()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+<pre><code>SuggestedLRs(valley=0.0002754228771664202)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="captcha_files/figure-html/cell-41-output-4.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>learn.fit_one_cycle(<span class="dv">4</span>, lr_max<span class="op">=</span><span class="bu">slice</span>(<span class="fl">1e-6</span>,<span class="fl">1e-4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>char_accu</th>
+      <th>captcha_accu</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.684843</td>
+      <td>0.818710</td>
+      <td>0.951923</td>
+      <td>0.831731</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.683118</td>
+      <td>0.822131</td>
+      <td>0.948077</td>
+      <td>0.822115</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.684270</td>
+      <td>0.820947</td>
+      <td>0.950000</td>
+      <td>0.826923</td>
+      <td>00:30</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.684729</td>
+      <td>0.818542</td>
+      <td>0.950962</td>
+      <td>0.831731</td>
+      <td>00:29</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<p>As expected, the accuracy is much better in this version.</p>
+</section>
+</section>
+<section id="crnn-coming-soon" class="level2">
+<h2 class="anchored" data-anchor-id="crnn-coming-soon">CRNN (Coming soon)</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
